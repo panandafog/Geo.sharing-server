@@ -6,10 +6,13 @@ from flask_jwt_extended import get_jwt_identity
 from database.models import User
 import database.db_utils as db_utils
 from logs import logger
+import json
+
 
 class HelloApi(Resource):
     def get(self):
         return 'Hello World!'
+
 
 class SaveGeoApi(Resource):
     @jwt_required()
@@ -27,6 +30,7 @@ class SaveGeoApi(Resource):
             )
         return response
 
+
 class UserRegisterApi(Resource):
     def post(self):
         try:
@@ -43,6 +47,25 @@ class UserRegisterApi(Resource):
                 status=400
             )
         return response
+
+
+class SearchUserApi(Resource):
+    @jwt_required()
+    def post(self):
+        try:
+            content = request.get_json(force=True)
+            users = db_utils.search_users(content['query'])
+            response = Response(
+                json.dumps(users, indent=4),
+                status=200
+            )
+        except Exception as e:
+            logger.error(str(e))
+            response = Response(
+                status=400
+            )
+        return response
+
 
 class LocationSaveApi(Resource):
     @jwt_required()
