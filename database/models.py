@@ -7,6 +7,7 @@ class User(db.Document):
     password = db.StringField(required=True, min_length=6)
     latitude = db.FloatField(required=False)
     longitude = db.FloatField(required=False)
+    picture = db.ImageField(thumbnail_size=(300, 300, False))
 
     def hash_password(self):
         self.password = generate_password_hash(self.password).decode('utf8')

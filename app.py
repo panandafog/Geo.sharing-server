@@ -30,5 +30,5 @@ if __name__ == '__main__':
     initialize_routes(api)
     app.run(
         host='0.0.0.0',
-        port=5555
+        port=5566
     )

@@ -1,4 +1,4 @@
-from .users import HelloApi, SaveGeoApi, UserRegisterApi, LocationSaveApi, SearchUserApi
+from .users import HelloApi, SaveGeoApi, UserRegisterApi, LocationSaveApi, SearchUserApi, ProfilePictureApi
 from .auth import SignupApi, LoginApi
 from .friendship import CreateFriendshipRequestApi, DeleteFriendshipRequestApi, AcceptFriendshipRequestApi, \
     RejectFriendshipRequestApi, GetIncomingFriendshipRequests, GetOutgoingFriendshipRequests
@@ -12,6 +12,7 @@ def initialize_routes(api):
     api.add_resource(SignupApi, '/user/signup')
     api.add_resource(LoginApi, '/user/login')
     api.add_resource(SearchUserApi, '/user/search')
+    api.add_resource(ProfilePictureApi, '/user/profile_picture')
 
     api.add_resource(CreateFriendshipRequestApi, '/friendship/create_request')
     api.add_resource(DeleteFriendshipRequestApi, '/friendship/delete_request')

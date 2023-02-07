@@ -1,5 +1,5 @@
 from flask import Response, request
-from flask_restful import Resource
+from flask_restful import Resource, reqparse
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended import get_jwt_identity
 
@@ -79,6 +79,45 @@ class LocationSaveApi(Resource):
             response = Response(
                 status=200
             )
+        except Exception as e:
+            logger.error(str(e))
+            response = Response(
+                status=400
+            )
+        return response
+
+
+class ProfilePictureApi(Resource):
+    @jwt_required()
+    def post(self):
+        try:
+            user_id = get_jwt_identity()
+            picture = request.files['picture']
+            logger.log(str(picture))
+            db_utils.save_profile_picture(user_id=user_id, picture=picture)
+            response = Response(
+                status=200
+            )
+        except Exception as e:
+            logger.error(str(e))
+            response = Response(
+                status=400
+            )
+        return response
+
+    @jwt_required()
+    def get(self):
+        try:
+            parser = reqparse.RequestParser()
+            parser.add_argument('user_id', type=str, location='args')
+            user_id = parser.parse_args()['user_id']
+
+            picture = db_utils.get_profile_picture(user_id)
+            response = Response(
+                picture,
+                status=200
+            )
+            response.headers.set('Content-Type', 'image/jpeg')
         except Exception as e:
             logger.error(str(e))
             response = Response(

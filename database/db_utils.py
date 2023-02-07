@@ -1,3 +1,6 @@
+import base64
+import tempfile
+
 from .db import db
 from .models import User, Friendship, FriendshipRequest
 from logs import logger
@@ -69,3 +72,23 @@ def get_friends(user_id):
 def search_users(query):
     users_list = User.objects(username=query)
     return list(map(make_dict, users_list))
+
+
+def get_profile_picture(user_id):
+    user = User.objects(id=user_id).first()
+    return user.picture.thumbnail.read()
+
+
+def save_profile_picture(user_id, picture):
+    file_like = base64.b64decode(picture.read())
+    bytes_image = bytearray(file_like)
+
+    user = User.objects(id=user_id).first()
+
+    with tempfile.TemporaryFile() as file:
+        file.write(bytes_image)
+        file.flush()
+        file.seek(0)
+        user.picture.put(file)
+
+    user.save()
