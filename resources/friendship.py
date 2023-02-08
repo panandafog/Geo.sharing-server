@@ -15,6 +15,7 @@ class CreateFriendshipRequestApi(Resource):
         try:
             content = request.get_json(force=True)
             user_id = get_jwt_identity()
+            db_utils.validate_user(user_id)
             db_utils.create_friendship_request(sender_id=user_id, recipient_id=content['recipient_id'])
             response = Response(
                 status=200
@@ -33,6 +34,7 @@ class DeleteFriendshipRequestApi(Resource):
         try:
             content = request.get_json(force=True)
             user_id = get_jwt_identity()
+            db_utils.validate_user(user_id)
             db_utils.delete_friendship_request(sender_id=user_id, recipient_id=content['recipient_id'])
             response = Response(
                 status=200
@@ -51,6 +53,7 @@ class AcceptFriendshipRequestApi(Resource):
         try:
             content = request.get_json(force=True)
             user_id = get_jwt_identity()
+            db_utils.validate_user(user_id)
             db_utils.accept_friendship_request(sender_id=content['sender_id'], recipient_id=user_id)
             response = Response(
                 status=200
@@ -69,6 +72,7 @@ class RejectFriendshipRequestApi(Resource):
         try:
             content = request.get_json(force=True)
             user_id = get_jwt_identity()
+            db_utils.validate_user(user_id)
             db_utils.reject_friendship_request(sender_id=content['sender_id'], recipient_id=user_id)
             response = Response(
                 status=200
@@ -86,6 +90,7 @@ class GetIncomingFriendshipRequests(Resource):
     def get(self):
         try:
             user_id = get_jwt_identity()
+            db_utils.validate_user(user_id)
             requests = db_utils.get_incoming_friendship_requests(user_id=user_id)
             response = Response(
                 json.dumps(requests, indent=4),
@@ -104,6 +109,7 @@ class GetOutgoingFriendshipRequests(Resource):
     def get(self):
         try:
             user_id = get_jwt_identity()
+            db_utils.validate_user(user_id)
             requests = db_utils.get_outgoing_friendship_requests(user_id=user_id)
             response = Response(
                 json.dumps(requests, indent=4),

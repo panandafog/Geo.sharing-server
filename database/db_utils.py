@@ -4,10 +4,59 @@ import tempfile
 from .db import db
 from .models import User, Friendship, FriendshipRequest
 from logs import logger
+from utils import email_helper
 
 
 def make_dict(n):
     return n.to_dict()
+
+
+def signup(username, password, email):
+    user = User(username=username, password=password, email=email)
+    user.hash_password()
+    user.generate_email_confirmation_code()
+    user.save()
+    email_helper.send_email_confirmation_code(user)
+    return user.id
+
+
+def confirm_email(user_id, code):
+    user = User.objects(id=user_id).first()
+    if user is None:
+        raise ValueError("user not found")
+    if str(user.email_confirmation_code) != str(code):
+        raise ValueError("wrong code")
+    user.email_confirmation_code = None
+    user.save()
+    return user.id
+
+
+def request_password_change(user_id):
+    user = User.objects(id=user_id).first()
+    if user is None:
+        raise ValueError("user not found")
+    user.generate_password_reset_code()
+    user.save()
+    email_helper.send_password_reset_confirmation_code(user)
+    return user.id
+
+
+def change_password(user_id, code, new_password):
+    user = User.objects(id=user_id).first()
+    if user is None:
+        raise ValueError("user not found")
+    if str(user.password_reset_code) != str(code):
+        raise ValueError("wrong code")
+    user.password_reset_code = None
+    user.password = new_password
+    user.hash_password()
+    user.save()
+
+
+def validate_user(user_id):
+    user = User.objects(id=user_id).first()
+    if not user.is_confirmed():
+        raise ValueError("user's email is not confirmed")
 
 
 def save_user_location(user_id, latitude, longitude):

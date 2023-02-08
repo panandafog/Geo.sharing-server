@@ -14,6 +14,45 @@ class HelloApi(Resource):
         return 'Hello World!'
 
 
+class RequestPasswordChangeApi(Resource):
+    @jwt_required()
+    def get(self):
+        try:
+            user_id = get_jwt_identity()
+            db_utils.request_password_change(user_id)
+            response = Response(
+                status=200
+            )
+        except Exception as e:
+            logger.error(str(e))
+            response = Response(
+                status=400
+            )
+        return response
+
+
+class ChangePasswordApi(Resource):
+    @jwt_required()
+    def post(self):
+        try:
+            user_id = get_jwt_identity()
+            body = request.get_json()
+            db_utils.change_password(
+                user_id=user_id,
+                code=body.get('code'),
+                new_password=body.get('new_password')
+            )
+            response = Response(
+                status=200
+            )
+        except Exception as e:
+            logger.error(str(e))
+            response = Response(
+                status=400
+            )
+        return response
+
+
 class SaveGeoApi(Resource):
     @jwt_required()
     def post(self):
@@ -31,28 +70,12 @@ class SaveGeoApi(Resource):
         return response
 
 
-class UserRegisterApi(Resource):
-    def post(self):
-        try:
-            content = request.get_json(force=True)
-            logger.log(str(content))
-            # database.create_user(content)
-            user = User(**content).save()
-            id = user.id
-
-            response = {'id': str(id)}, 200
-        except Exception as e:
-            logger.error(str(e))
-            response = Response(
-                status=400
-            )
-        return response
-
-
 class SearchUserApi(Resource):
     @jwt_required()
     def post(self):
         try:
+            user_id = get_jwt_identity()
+            db_utils.validate_user(user_id)
             content = request.get_json(force=True)
             users = db_utils.search_users(content['query'])
             response = Response(
@@ -73,6 +96,7 @@ class LocationSaveApi(Resource):
         try:
             content = request.get_json(force=True)
             user_id = get_jwt_identity()
+            db_utils.validate_user(user_id)
             logger.log(str(content))
             db_utils.save_user_location(user_id=user_id, latitude=content['latitude'], longitude=content['longitude'])
             # database.update_geolocation(user_id=content['user_id'], latitude=content['latitude'], longitude=content['longitude'])
@@ -92,6 +116,7 @@ class ProfilePictureApi(Resource):
     def post(self):
         try:
             user_id = get_jwt_identity()
+            db_utils.validate_user(user_id)
             picture = request.files['picture']
             logger.log(str(picture))
             db_utils.save_profile_picture(user_id=user_id, picture=picture)
