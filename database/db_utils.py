@@ -129,15 +129,8 @@ def get_profile_picture(user_id):
 
 
 def save_profile_picture(user_id, picture):
-    file_like = base64.b64decode(picture.read())
-    bytes_image = bytearray(file_like)
-
     user = User.objects(id=user_id).first()
-
-    with tempfile.TemporaryFile() as file:
-        file.write(bytes_image)
-        file.flush()
-        file.seek(0)
-        user.picture.put(file)
-
+    user.picture.delete()
+    user.picture.put(picture)
     user.save()
+    
