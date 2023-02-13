@@ -6,7 +6,7 @@ import json
 
 import database.db_utils as db_utils
 from logs import logger
-from utils.json import fix_array
+from utils.exceptions import APIException
 
 
 class CreateFriendshipRequestApi(Resource):
@@ -22,9 +22,7 @@ class CreateFriendshipRequestApi(Resource):
             )
         except Exception as e:
             logger.error(str(e))
-            response = Response(
-                status=400
-            )
+            response = APIException.from_exception(e).flask_response()
         return response
 
 
@@ -41,9 +39,7 @@ class DeleteFriendshipRequestApi(Resource):
             )
         except Exception as e:
             logger.error(str(e))
-            response = Response(
-                status=400
-            )
+            response = APIException.from_exception(e).flask_response()
         return response
 
 
@@ -60,9 +56,7 @@ class AcceptFriendshipRequestApi(Resource):
             )
         except Exception as e:
             logger.error(str(e))
-            response = Response(
-                status=400
-            )
+            response = APIException.from_exception(e).flask_response()
         return response
 
 
@@ -79,9 +73,7 @@ class RejectFriendshipRequestApi(Resource):
             )
         except Exception as e:
             logger.error(str(e))
-            response = Response(
-                status=400
-            )
+            response = APIException.from_exception(e).flask_response()
         return response
 
 
@@ -98,9 +90,7 @@ class GetIncomingFriendshipRequests(Resource):
             )
         except Exception as e:
             logger.error(str(e))
-            response = Response(
-                status=400
-            )
+            response = APIException.from_exception(e).flask_response()
         return response
 
 
@@ -117,7 +107,5 @@ class GetOutgoingFriendshipRequests(Resource):
             )
         except Exception as e:
             logger.error(str(e))
-            response = Response(
-                status=400
-            )
+            response = APIException.from_exception(e).flask_response()
         return response

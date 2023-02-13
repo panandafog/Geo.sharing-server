@@ -7,6 +7,7 @@ from database.models import User
 import database.db_utils as db_utils
 from logs import logger
 import json
+from utils.exceptions import APIException
 
 
 class HelloApi(Resource):
@@ -25,9 +26,7 @@ class RequestPasswordChangeApi(Resource):
             )
         except Exception as e:
             logger.error(str(e))
-            response = Response(
-                status=400
-            )
+            response = APIException.from_exception(e).flask_response()
         return response
 
 
@@ -47,9 +46,7 @@ class ChangePasswordApi(Resource):
             )
         except Exception as e:
             logger.error(str(e))
-            response = Response(
-                status=400
-            )
+            response = APIException.from_exception(e).flask_response()
         return response
 
 
@@ -64,9 +61,7 @@ class SaveGeoApi(Resource):
             )
         except Exception as e:
             logger.error(str(e))
-            response = Response(
-                status=400
-            )
+            response = APIException.from_exception(e).flask_response()
         return response
 
 
@@ -77,16 +72,14 @@ class SearchUserApi(Resource):
             user_id = get_jwt_identity()
             db_utils.validate_user(user_id)
             content = request.get_json(force=True)
-            users = db_utils.search_users(content['query'])
+            users = db_utils.search_users(content['query'], user_id)
             response = Response(
                 json.dumps(users, indent=4),
                 status=200
             )
         except Exception as e:
             logger.error(str(e))
-            response = Response(
-                status=400
-            )
+            response = APIException.from_exception(e).flask_response()
         return response
 
 
@@ -105,9 +98,7 @@ class LocationSaveApi(Resource):
             )
         except Exception as e:
             logger.error(str(e))
-            response = Response(
-                status=400
-            )
+            response = APIException.from_exception(e).flask_response()
         return response
 
 
@@ -125,9 +116,7 @@ class ProfilePictureApi(Resource):
             )
         except Exception as e:
             logger.error(str(e))
-            response = Response(
-                status=400
-            )
+            response = APIException.from_exception(e).flask_response()
         return response
 
     @jwt_required()
@@ -145,7 +134,5 @@ class ProfilePictureApi(Resource):
             response.headers.set('Content-Type', 'image/jpeg')
         except Exception as e:
             logger.error(str(e))
-            response = Response(
-                status=400
-            )
+            response = APIException.from_exception(e).flask_response()
         return response

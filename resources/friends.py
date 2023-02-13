@@ -6,6 +6,7 @@ import json
 
 import database.db_utils as db_utils
 from logs import logger
+from utils.exceptions import APIException
 
 
 class GetFriends(Resource):
@@ -22,9 +23,7 @@ class GetFriends(Resource):
             )
         except Exception as e:
             logger.error(str(e))
-            response = Response(
-                status=400
-            )
+            response = APIException.from_exception(e).flask_response()
         return response
 
 
@@ -41,7 +40,5 @@ class DeleteFriend(Resource):
             )
         except Exception as e:
             logger.error(str(e))
-            response = Response(
-                status=400
-            )
+            response = APIException.from_exception(e).flask_response()
         return response

@@ -115,12 +115,12 @@ def get_friends(user_id):
     friendships_list_2 = Friendship.objects(user2=user_id)
     result = list(map(make_dict, friendships_list_1)) + list(map(make_dict, friendships_list_2))
     return result
-    # add user2
 
 
-def search_users(query):
-    users_list = User.objects(username=query)
-    return list(map(make_dict, users_list))
+def search_users(query, user_id):
+    users = User.objects(username=query)
+    users_list = list(map(make_dict, users))
+    return list(filter(lambda user: str(user['id']) != str(user_id), users_list))
 
 
 def get_profile_picture(user_id):
@@ -133,4 +133,3 @@ def save_profile_picture(user_id, picture):
     user.picture.delete()
     user.picture.put(picture)
     user.save()
-    
