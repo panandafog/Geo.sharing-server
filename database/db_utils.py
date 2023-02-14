@@ -5,6 +5,7 @@ from .db import db
 from .models import User, Friendship, FriendshipRequest
 from logs import logger
 from utils import email_helper
+from utils.exceptions import APIException
 
 
 def make_dict(n):
@@ -15,6 +16,25 @@ def signup(username, password, email):
     user = User(username=username, password=password, email=email)
     user.hash_password()
     user.generate_email_confirmation_code()
+
+    users_with_same_username = User.objects(username=username, email__ne=email)
+    if len(users_with_same_username) > 0:
+        raise APIException(406, "Username is already taken")
+
+    users_with_same_email = User.objects(username__ne=username, email=email)
+    if len(users_with_same_email) > 0:
+        raise APIException(406, "Email is already taken")
+
+    same_user = User.objects(username=username, email=email).first()
+    if not (same_user is None):
+        if same_user.is_confirmed():
+            logger.log(str(same_user.email_confirmation_code))
+            logger.log(str(same_user.email_confirmation_code is None))
+            logger.log(str(same_user.is_confirmed()))
+            raise APIException(406, "User already exists")
+        else:
+            same_user.delete()
+
     user.save()
     email_helper.send_email_confirmation_code(user)
     return user.id

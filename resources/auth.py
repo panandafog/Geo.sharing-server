@@ -20,7 +20,7 @@ class SignupApi(Resource):
             )
             return {'id': str(uid)}, 200
         except Exception as e:
-            logger.error(str(e))
+            logger.exception()
             response = APIException.from_exception(e).flask_response()
         return response
 
@@ -34,7 +34,7 @@ class ConfirmEmailApi(Resource):
             )
             return {'id': str(uid)}, 200
         except Exception as e:
-            logger.error(str(e))
+            logger.exception()
             response = APIException.from_exception(e).flask_response()
         return response
 
@@ -63,6 +63,6 @@ class LoginApi(Resource):
                    'email': str(user.email)
             }, 200
         except Exception as e:
-            logger.error(str(e))
+            logger.exception()
             response = APIException.from_exception(e).flask_response()
         return response

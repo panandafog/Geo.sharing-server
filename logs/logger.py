@@ -1,6 +1,8 @@
 from pathlib import Path
 from datetime import datetime
+import traceback
 import io
+
 import utils.files as files
 
 output_directory = './logs_output/'
@@ -31,3 +33,7 @@ def error(message='', file=main_log_name):
     with io.open(log_files[file], 'a', encoding=encoding) as outfile:
         outfile.write('[ERROR] ' + get_time() + ': ' + message + '\n')
         print('[ERROR] ' + message)
+
+
+def exception(file=main_log_name):
+    error(message=traceback.format_exc(), file=file)

@@ -25,7 +25,7 @@ class RequestPasswordChangeApi(Resource):
                 status=200
             )
         except Exception as e:
-            logger.error(str(e))
+            logger.exception()
             response = APIException.from_exception(e).flask_response()
         return response
 
@@ -45,7 +45,7 @@ class ChangePasswordApi(Resource):
                 status=200
             )
         except Exception as e:
-            logger.error(str(e))
+            logger.exception()
             response = APIException.from_exception(e).flask_response()
         return response
 
@@ -60,7 +60,7 @@ class SaveGeoApi(Resource):
                 status=200
             )
         except Exception as e:
-            logger.error(str(e))
+            logger.exception()
             response = APIException.from_exception(e).flask_response()
         return response
 
@@ -78,7 +78,7 @@ class SearchUserApi(Resource):
                 status=200
             )
         except Exception as e:
-            logger.error(str(e))
+            logger.exception()
             response = APIException.from_exception(e).flask_response()
         return response
 
@@ -97,7 +97,7 @@ class LocationSaveApi(Resource):
                 status=200
             )
         except Exception as e:
-            logger.error(str(e))
+            logger.exception()
             response = APIException.from_exception(e).flask_response()
         return response
 
@@ -115,7 +115,7 @@ class ProfilePictureApi(Resource):
                 status=200
             )
         except Exception as e:
-            logger.error(str(e))
+            logger.exception()
             response = APIException.from_exception(e).flask_response()
         return response
 
@@ -133,6 +133,6 @@ class ProfilePictureApi(Resource):
             )
             response.headers.set('Content-Type', 'image/jpeg')
         except Exception as e:
-            logger.error(str(e))
+            logger.exception()
             response = APIException.from_exception(e).flask_response()
         return response

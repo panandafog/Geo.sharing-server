@@ -22,7 +22,7 @@ class GetFriends(Resource):
                 status=200
             )
         except Exception as e:
-            logger.error(str(e))
+            logger.exception()
             response = APIException.from_exception(e).flask_response()
         return response
 
@@ -39,6 +39,6 @@ class DeleteFriend(Resource):
                 status=200
             )
         except Exception as e:
-            logger.error(str(e))
+            logger.exception()
             response = APIException.from_exception(e).flask_response()
         return response

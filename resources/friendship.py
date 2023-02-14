@@ -21,7 +21,7 @@ class CreateFriendshipRequestApi(Resource):
                 status=200
             )
         except Exception as e:
-            logger.error(str(e))
+            logger.exception()
             response = APIException.from_exception(e).flask_response()
         return response
 
@@ -38,7 +38,7 @@ class DeleteFriendshipRequestApi(Resource):
                 status=200
             )
         except Exception as e:
-            logger.error(str(e))
+            logger.exception()
             response = APIException.from_exception(e).flask_response()
         return response
 
@@ -55,7 +55,7 @@ class AcceptFriendshipRequestApi(Resource):
                 status=200
             )
         except Exception as e:
-            logger.error(str(e))
+            logger.exception()
             response = APIException.from_exception(e).flask_response()
         return response
 
@@ -72,7 +72,7 @@ class RejectFriendshipRequestApi(Resource):
                 status=200
             )
         except Exception as e:
-            logger.error(str(e))
+            logger.exception()
             response = APIException.from_exception(e).flask_response()
         return response
 
@@ -89,7 +89,7 @@ class GetIncomingFriendshipRequests(Resource):
                 status=200
             )
         except Exception as e:
-            logger.error(str(e))
+            logger.exception()
             response = APIException.from_exception(e).flask_response()
         return response
 
@@ -106,6 +106,6 @@ class GetOutgoingFriendshipRequests(Resource):
                 status=200
             )
         except Exception as e:
-            logger.error(str(e))
+            logger.exception()
             response = APIException.from_exception(e).flask_response()
         return response
