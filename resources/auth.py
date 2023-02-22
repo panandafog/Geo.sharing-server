@@ -54,8 +54,9 @@ class LoginApi(Resource):
             if not user.is_confirmed():
                 raise APIException(402, 'Email is not confirmed')
 
-            expires = datetime.timedelta(days=7)
-            access_token = create_access_token(identity=str(user.id), expires_delta=expires)
+            # expires = datetime.timedelta(days=7)
+            # access_token = create_access_token(identity=str(user.id), expires_delta=expires)
+            access_token = create_access_token(identity=str(user.id))
             response = {
                    'token': access_token,
                    'id': str(user.id),

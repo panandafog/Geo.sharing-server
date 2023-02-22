@@ -2,6 +2,7 @@ import base64
 import tempfile
 
 from .db import db
+from datetime import datetime, timezone
 from .models import User, Friendship, FriendshipRequest
 from logs import logger
 from utils import email_helper
@@ -82,7 +83,8 @@ def validate_user(user_id):
 def save_user_location(user_id, latitude, longitude):
     User.objects(id=user_id).update(
         set__latitude=latitude,
-        set__longitude=longitude
+        set__longitude=longitude,
+        set__last_update=datetime.now(timezone.utc)
     )
 
 
@@ -138,7 +140,7 @@ def get_friends(user_id):
 
 
 def search_users(query, user_id):
-    users = User.objects(username=query)
+    users = User.objects(username__icontains=query)
     users_list = list(map(make_dict, users))
     return list(filter(lambda user: str(user['id']) != str(user_id), users_list))
 

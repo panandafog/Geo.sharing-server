@@ -2,6 +2,7 @@ from .db import db
 from flask_bcrypt import generate_password_hash, check_password_hash
 
 import utils.code_generator as code_generator
+import utils.json as json_utils
 
 
 class User(db.Document):
@@ -14,6 +15,7 @@ class User(db.Document):
 
     latitude = db.FloatField(required=False)
     longitude = db.FloatField(required=False)
+    last_update = db.DateTimeField()
 
     picture = db.ImageField(thumbnail_size=(300, 300, False))
 
@@ -33,11 +35,15 @@ class User(db.Document):
         return self.email_confirmation_code is None
 
     def to_dict(self):
+        last_update = self.last_update
+        if last_update:
+            last_update = last_update.strftime(json_utils.date_format)
         return {
             "id": str(self.pk),
             "username": self.username,
             "latitude": self.latitude,
-            "longitude": self.longitude
+            "longitude": self.longitude,
+            "last_update": last_update
         }
 
 
