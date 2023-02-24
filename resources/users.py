@@ -16,11 +16,10 @@ class HelloApi(Resource):
 
 
 class RequestPasswordChangeApi(Resource):
-    @jwt_required()
-    def get(self):
+    def post(self):
         try:
-            user_id = get_jwt_identity()
-            db_utils.request_password_change(user_id)
+            content = request.get_json(force=True)
+            db_utils.request_password_change(email=content.get('email'))
             response = Response(
                 status=200
             )
@@ -31,13 +30,12 @@ class RequestPasswordChangeApi(Resource):
 
 
 class ChangePasswordApi(Resource):
-    @jwt_required()
     def post(self):
         try:
-            user_id = get_jwt_identity()
+            content = request.get_json(force=True)
             body = request.get_json()
             db_utils.change_password(
-                user_id=user_id,
+                email=content.get('email'),
                 code=body.get('code'),
                 new_password=body.get('new_password')
             )

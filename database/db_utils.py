@@ -52,8 +52,8 @@ def confirm_email(user_id, code):
     return user.id
 
 
-def request_password_change(user_id):
-    user = User.objects(id=user_id).first()
+def request_password_change(email):
+    user = User.objects(email=email).first()
     if user is None:
         raise ValueError("user not found")
     user.generate_password_reset_code()
@@ -62,8 +62,8 @@ def request_password_change(user_id):
     return user.id
 
 
-def change_password(user_id, code, new_password):
-    user = User.objects(id=user_id).first()
+def change_password(email, code, new_password):
+    user = User.objects(email=email).first()
     if user is None:
         raise ValueError("user not found")
     if str(user.password_reset_code) != str(code):
