@@ -1,5 +1,5 @@
-storage
-logs_output
+mongodb-data
+mongodb-log
 secrets.py
 
 # Created by https://www.toptal.com/developers/gitignore/api/pycharm,macos,python

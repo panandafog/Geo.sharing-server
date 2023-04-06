@@ -1,7 +1,3 @@
-import base64
-import tempfile
-
-from .db import db
 from datetime import datetime, timezone
 from .models import User, Friendship, FriendshipRequest
 from logs import logger
