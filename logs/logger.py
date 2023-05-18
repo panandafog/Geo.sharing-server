@@ -24,15 +24,21 @@ def init_logging(name=main_log_name):
 
 
 def log(message='', file=main_log_name):
-    with io.open(log_files[file], 'a', encoding=encoding) as outfile:
-        outfile.write(get_time() + ': ' + message + '\n')
-        print(message)
+    try:
+        with io.open(log_files[file], 'a', encoding=encoding) as outfile:
+            outfile.write(get_time() + ': ' + message + '\n')
+            print(message)
+    except KeyError:
+        print("Cant find log file")
 
 
 def error(message='', file=main_log_name):
-    with io.open(log_files[file], 'a', encoding=encoding) as outfile:
-        outfile.write('[ERROR] ' + get_time() + ': ' + message + '\n')
-        print('[ERROR] ' + message)
+    try:
+        with io.open(log_files[file], 'a', encoding=encoding) as outfile:
+            outfile.write('[ERROR] ' + get_time() + ': ' + message + '\n')
+            print('[ERROR] ' + message)
+    except KeyError:
+        print("Cant find log file")
 
 
 def exception(file=main_log_name):

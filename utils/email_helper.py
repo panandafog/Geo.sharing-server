@@ -1,6 +1,7 @@
 import smtplib, ssl
 
 import secrets
+import configuration.configurator as configuration
 
 smtp_server = "smtp.gmail.com"
 port = 587
@@ -11,6 +12,7 @@ context = ssl.create_default_context()
 
 
 def send_email_confirmation_code(user):
+    if configuration.is_testing(): return
     server = smtplib.SMTP(smtp_server, port)
     server.starttls(context=context)
     server.login(sender_email, password)
@@ -22,6 +24,7 @@ def send_email_confirmation_code(user):
 
 
 def send_password_reset_confirmation_code(user):
+    if configuration.is_testing(): return
     server = smtplib.SMTP(smtp_server, port)
     server.starttls(context=context)
     server.login(sender_email, password)

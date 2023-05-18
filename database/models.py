@@ -1,9 +1,14 @@
 from .db import db
 from flask_bcrypt import generate_password_hash, check_password_hash
+import mongoengine
 
 import utils.code_generator as code_generator
 import utils.json as json_utils
 
+def drop_all():
+    User.drop_collection()
+    Friendship.drop_collection()
+    FriendshipRequest.drop_collection()
 
 class User(db.Document):
     username = db.StringField(required=True, unique=True, min_length=6)
@@ -60,12 +65,22 @@ class FriendshipRequest(db.Document):
 
 
 class Friendship(db.Document):
-    user1 = db.ReferenceField(User)
-    user2 = db.ReferenceField(User)
+    user1 = db.ReferenceField(User, reverse_delete_rule=mongoengine.CASCADE)
+    user2 = db.ReferenceField(User, reverse_delete_rule=mongoengine.CASCADE)
 
     def to_dict(self):
+        if self.user1 is None:
+            user1dict = {}
+        else:
+            user1dict = self.user1.to_dict()
+
+        if self.user2 is None:
+            user2dict = {}
+        else:
+            user2dict = self.user2.to_dict()
+
         return {
             "id": str(self.pk),
-            "user1": self.user1.to_dict(),
-            "user2": self.user2.to_dict()
+            "user1": user1dict,
+            "user2": user2dict
         }

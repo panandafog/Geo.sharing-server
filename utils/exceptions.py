@@ -21,6 +21,10 @@ class APIException(Exception):
             return cls(unauthorized_code, "Invalid token")
         return cls(455, str(exception))
 
+    @classmethod
+    def unauthorized(cls, message):
+        return cls(unauthorized_code, str(message))
+
     def json_body(self):
         return json.dumps({'error': self.description})
 

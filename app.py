@@ -1,36 +1,49 @@
+import os
 from flask import Flask
-from flask import jsonify
 from logs import logger
-from flask_restful import Api
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager
 
+import configuration.configurator as configuration
 from database.db import initialize_db
 from configuration.configurator import Configurator
 from resources.routes import initialize_routes
 from resources.geo_api import GeoApi
 from secrets import JWT_SECRET_KEY
 
-app = Flask(__name__)
+configuration.set_testing(False)
 
-logger.init_logging()
-configurator = Configurator()
+def create_app(configurator=None):
+    if configurator is None:
+        configurator = Configurator()
 
-app.config['MONGODB_SETTINGS'] = {
-    'host': configurator.db_uri
-}
-app.config["JWT_SECRET_KEY"] = JWT_SECRET_KEY
-app.config["PROPAGATE_EXCEPTIONS"] = True
+    app = Flask(__name__)
 
-api = GeoApi(app)
-bcrypt = Bcrypt(app)
-jwt = JWTManager(app)
+    app.config['MONGODB_SETTINGS'] = {
+        'host': configurator.db_uri
+    }
+    app.config["JWT_SECRET_KEY"] = JWT_SECRET_KEY
+    app.config["PROPAGATE_EXCEPTIONS"] = True
 
-initialize_db(app)
+    api = GeoApi(app)
+    bcrypt = Bcrypt(app)
+    jwt = JWTManager(app)
 
-if __name__ == '__main__':
+    initialize_db(app)
     initialize_routes(api)
+
+    return app
+
+def run():
+    logger.init_logging()
+
+    app = create_app()
+
     app.run(
         host='0.0.0.0',
         port=5566
     )
+
+
+if __name__ == '__main__':
+    run()
