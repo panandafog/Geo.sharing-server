@@ -11,6 +11,8 @@ from resources.routes import initialize_routes
 from resources.geo_api import GeoApi
 from secrets import JWT_SECRET_KEY
 
+configuration.set_testing(False)
+
 def create_app(configurator=None):
     if configurator is None:
         configurator = Configurator()
@@ -44,5 +46,4 @@ def run():
 
 
 if __name__ == '__main__':
-    configuration.set_testing(False)
     run()
