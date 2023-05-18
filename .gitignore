@@ -1,5 +1,8 @@
 mongodb-data
 mongodb-log
+mongodb-data-development
+mongodb-log-development
+logs_output
 secrets.py
 
 # Created by https://www.toptal.com/developers/gitignore/api/pycharm,macos,python

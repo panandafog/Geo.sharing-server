@@ -3,7 +3,7 @@ from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identi
 import datetime
 import mongoengine.errors
 
-import database.db_utils as db_utils
+import services.authorization as auth_service
 from database.models import User
 from flask_restful import Resource
 from logs import logger
@@ -13,7 +13,7 @@ from utils.exceptions import APIException
 class SignupApi(Resource):
     def post(self):
         body = request.get_json()
-        uid = db_utils.signup(
+        uid = auth_service.signup(
             username=body.get('username'),
             password=body.get('password'),
             email=body.get('email')
@@ -24,7 +24,7 @@ class SignupApi(Resource):
 class ConfirmEmailApi(Resource):
     def post(self):
         body = request.get_json()
-        uid = db_utils.confirm_email(
+        uid = auth_service.confirm_email(
             user_id=body.get('user_id'),
             code=body.get('code')
         )
@@ -56,6 +56,16 @@ class LoginApi(Resource):
             'username': str(user.username),
             'email': str(user.email)
         }, 200
+
+
+class DeleteUserApi(Resource):
+    @jwt_required()
+    def delete(self):
+        print()
+        user_id = get_jwt_identity()
+        auth_service.delete_user(user_id)
+        logger.log(user_id)
+        return {'id': str(user_id)}, 200
 
 
 class RefreshTokenApi(Resource):
