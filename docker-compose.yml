@@ -1,5 +1,15 @@
 version: '3.8'
 services:
+  geo:
+    image: panandafog/geo
+    container_name: geo-container
+    restart: always
+    ports:
+        - "5566:5566"
+    networks:
+      - server
+    depends_on:
+      - mongo
   mongo:
     image: mongo
     container_name: mongo-container
