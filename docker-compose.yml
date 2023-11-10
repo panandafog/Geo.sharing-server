@@ -5,7 +5,7 @@ services:
     container_name: geo-container
     restart: always
     ports:
-        - "5566:5566"
+        - "8080:8080"
     networks:
       - server
     depends_on:
