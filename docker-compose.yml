@@ -1,5 +1,15 @@
 version: '3.8'
 services:
+  geo:
+    image: panandafog/geo
+    container_name: geo-container
+    restart: always
+    ports:
+        - "5566:5566"
+    networks:
+      - server
+    depends_on:
+      - mongo
   mongo:
     image: mongo
     container_name: mongo-container
@@ -20,58 +30,6 @@ services:
       - '--logpath'
       - '/var/log/mongodb/mongodb.log'
 
-  mongo-express:
-    image: mongo-express
-    container_name: mongo-express-container
-    restart: always
-    depends_on:
-      - mongo
-    ports:
-      - "8081:8081"
-    networks:
-      - server
-    environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
-      ME_CONFIG_MONGODB_ADMINPASSWORD: password
-      ME_CONFIG_MONGODB_URL: mongodb://admin:password@mongo-container:27017/
-
-  mongo-development:
-    image: mongo
-    container_name: mongo-development-container
-    restart: always
-    ports:
-      - "27018:27017"
-    networks:
-      - server-development
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: password
-      MONGO_INITDB_DATABASE: geo_db
-    volumes:
-      - ./mongodb-data-development:/data/db
-      - ./mongodb-log-development:/var/log/mongodb
-      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
-    command:
-      - '--logpath'
-      - '/var/log/mongodb/mongodb.log'
-
-  mongo-express-development:
-    image: mongo-express
-    container_name: mongo-express-development-container
-    restart: always
-    depends_on:
-      - mongo-development
-    ports:
-      - "8082:8081"
-    networks:
-      - server-development
-    environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
-      ME_CONFIG_MONGODB_ADMINPASSWORD: password
-      ME_CONFIG_MONGODB_URL: mongodb://admin:password@mongo-development-container:27017/
-
 networks:
   server:
-    driver: bridge
-  server-development:
     driver: bridge

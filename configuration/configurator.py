@@ -12,7 +12,7 @@ def set_testing(testing):
 class Configurator:
 
     def __init__(self):
-        self.db_host = 'localhost'
+        self.db_host = 'mongo-container'
         self.db_username = 'geo'
         self.db_password = 'password'
         self.db_name = 'geo_db'
